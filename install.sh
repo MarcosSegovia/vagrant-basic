@@ -20,8 +20,8 @@ sed -i "s/error_reporting = .*/error_reporting = E_ALL/" /etc/php5/apache2/php.i
 sed -i "s/display_errors = .*/display_errors = On/" /etc/php5/apache2/php.ini
 
 # apache config
-sudo rm -rf /var/www/html
-sudo ln -fs /vagrant/public /var/www/html
+#sudo rm -rf /var/www/html
+#sudo ln -fs /vagrant/public /var/www/html
 # sudo ln -fs /vagrant /var/www
 sudo a2enmod rewrite
 sudo sed -i 's/APACHE_RUN_USER=.*/APACHE_RUN_USER=vagrant/g' /etc/apache2/envvars
