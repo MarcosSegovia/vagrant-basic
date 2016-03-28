@@ -77,4 +77,11 @@ xdebug.remote_connect_back = on
 EOF
 sudo service apache2 restart
 
+#redis
+
+sudo wget http://download.redis.io/redis-stable.tar.gz
+tar xvzf redis-stable.tar.gz
+cd redis-stable
+make
+
 
