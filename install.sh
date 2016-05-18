@@ -26,7 +26,10 @@ sed -i "s/display_errors = .*/display_errors = On/" /etc/php5/apache2/php.ini
 sudo a2enmod rewrite
 sudo sed -i 's/APACHE_RUN_USER=.*/APACHE_RUN_USER=vagrant/g' /etc/apache2/envvars
 sudo sed -i 's/APACHE_RUN_GROUP=.*/APACHE_RUN_GROUP=www-data/g' /etc/apache2/envvars
-sed -i 's/AllowOverride None/AllowOverride All/' /etc/apache2/apache2.conf
+sed -i 's/AllowOverride None/AllowOverride All/' /etc/apache2/apache2.
+sudo su
+echo "ServerName localhost" >> /etc/apache2/apache2.conf
+exit
 sudo service apache2 restart
 
 # composer
@@ -77,11 +80,30 @@ xdebug.remote_connect_back = on
 EOF
 sudo service apache2 restart
 
-#redis
+# REDIS
 
-sudo wget http://download.redis.io/redis-stable.tar.gz
-tar xvzf redis-stable.tar.gz
+sudo apt-get install php5-redis
+sudo apt-get install make gcc g++
+
+mkdir -p /tmp/redis
+cd /tmp/redis
+sudo wget http://download.redis.io/releases/redis-stable.tar.gz
+tar xzf redis-stable.tar.gz
 cd redis-stable
-make
 
+sudo make install clean
 
+sudo apt-get install php5-dev
+sudo apt-get install zip unzip
+
+cd /tmp
+wget https://github.com/phpredis/phpredis/archive/master.zip -O phpredis.zip
+unzip -o /tmp/phpredis.zip && mv /tmp/phpredis-* /tmp/phpredis && cd /tmp/phpredis && phpize && ./configure && make && sudo make install
+
+sudo touch /etc/php5/mods-available/redis.ini && echo extension=redis.so > /etc/php5/mods-available/redis.ini
+sudo ln -s /etc/php5/mods-available/redis.ini /etc/php5/apache2/conf.d/
+sudo ln -s /etc/php5/mods-available/redis.ini /etc/php5/cli/conf.d/
+
+sudo service apache2 restart
+
+redis-server /vagrant/files/redis/redis.conf
